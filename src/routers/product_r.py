@@ -1,27 +1,44 @@
 from fastapi import APIRouter, Query
-from ..models.models import Product
+from ..schemas.schemas import Product
 from ..services.product_service import ProductError, ProductService
 from fastapi import HTTPException
 
-router = APIRouter()
+router = APIRouter(tags=["Product endpoints"])
 
 # Lista alla produkter
 @router.get("/products", response_model=list[Product])
-async def list_products():
+def list_products():
     return ProductService.get_all_products()
 
 
-# Hämta specifik produkt 
-# (kan göras async om det är cpu bound databasfrågor)
-@router.get("/products/search/", response_model=Product, responses={404: {"description": "Item not found"}})
-def get_product(product_variable: int | None = Query(None, description="Product ID"),
-    name: str | None = Query(None, description="Product name"),):
-    if product_variable is None and name is None:
-            raise HTTPException(status_code=400, detail="Could not find specified Product id:"+ product_variable + " or name:" + name)
-    try: 
-        return ProductService.get_product_by_id(product_variable)
-    except ProductError:
-        raise HTTPException(status_code=404, detail="Item not found")
+@router.get("/products/search", response_model=list[Product])
+def search_products(
+    name: str | None = Query(None, description="Sök efter produktnamn (delvis matchning)"),
+    in_stock: bool | None = Query(None, description="Filtrera på lagerstatus"),
+    min_price: float | None = Query(None, description="Minsta pris"),
+    max_price: float | None = Query(None, description="Högsta pris")
+):
+    """
+    Alla parametrar är valfria och kan kombineras.
+    Exempel: /products/search?name=skidor&in_stock=true&min_price=1000
+    """
+    return ProductService.search_products(
+        name=name,
+        in_stock=in_stock,
+        min_price=min_price,
+        max_price=max_price
+    )
+
+
+@router.get("/products/{product_id}", response_model=Product)
+def get_product_by_id(product_id: int):
+    try:
+        return ProductService.get_product_by_id(product_id)
+    except ProductError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+
 
 
 

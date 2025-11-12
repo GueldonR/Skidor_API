@@ -8,4 +8,4 @@ class Product(BaseModel):
     price: float
     in_stock: bool = True
 
-    # to-do: lägg till lagerhållning 
+ 
