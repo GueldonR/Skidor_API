@@ -2,3 +2,4 @@ __pycache__/
 .venv
 .editorconfig
 warehouse.db
+eskitech_poc

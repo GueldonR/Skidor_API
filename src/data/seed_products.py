@@ -1,0 +1,56 @@
+import sys
+import random
+from faker import Faker
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from .db.future_db import Product
+
+# Ett skript för att skapa produkter i databasen
+# Kör med: python -m src.data.seed_products <antal_produkter>
+
+DATABASE_URL = "postgresql://skidor_user:skidor_pass@localhost:5432/skidor_db"
+
+PRODUCT_NAMES = [
+    "Skidor", "Alpinskidor", "Längdskidor", "Skidstavar", "Skidbindningar",
+    "Skidpjäxor", "Skidjacka", "Skidbyxor", "Skidhjälm", "Skidglasögon",
+    "Skidvantar", "Skidmössa", "Skidunderställ", "Skidpulka", "Skidvax",
+    "Premium Skidor", "Racing Skidor", "Backcountry Skidor", "Skidstavar Pro"
+]
+
+faker = Faker('sv_SE')  
+
+def seed_products(num_products: int):
+    """Generate and insert fake products into database."""
+    engine = create_engine(DATABASE_URL)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    
+    try:
+        for _ in range(num_products):
+            product = Product(
+                SKU=faker.bothify(text='SKU-####'),
+                name=random.choice(PRODUCT_NAMES),
+                description=faker.text(max_nb_chars=100),
+                price=round(random.uniform(200, 10000), 2),
+                in_stock=random.choice([True, False])
+            )
+            session.add(product)
+        
+        session.commit()
+        print(f"Successfully created {num_products} products")
+    except Exception as e:
+        session.rollback()
+        print(str(e))
+    finally:
+        session.close()
+
+# Konfig för skriptets körning 
+# Exempel - python -m src.data.seed_products <antal_produkter>
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python src/data/seed_products.py <number_of_products>")
+        sys.exit(1)
+    
+    num_products = int(sys.argv[1])
+    seed_products(num_products)
+
