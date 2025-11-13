@@ -1,59 +1,50 @@
-from fastapi import APIRouter, Query
-from ..schemas.schemas import Product
-from ..services.product_service import ProductError, ProductService
-from fastapi import HTTPException
+from uuid import UUID
+from fastapi import APIRouter, Query, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from ..schemas.schemas import Product, ProductCreate
+from ..services.product_service import ProductService
+from ..data.db.future_db import get_database_session
 
 router = APIRouter(tags=["Product endpoints"])
 
-# Lista alla produkter
+
 @router.get("/products", response_model=list[Product])
-def list_products_endpoint():
-    """
-    Listar alla produkter i databasen
-    """
-    return ProductService.get_all_products()
+async def list_products_endpoint(
+    session: AsyncSession = Depends(get_database_session)
+):
+    return await ProductService.get_all_products(session)
 
 
 @router.get("/products/search", response_model=list[Product])
-def search_products_endpoint(
+async def search_products_endpoint(
     name: str | None = Query(None, description="Sök efter produktnamn (delvis matchning)"),
     in_stock: bool | None = Query(None, description="Filtrera på lagerstatus"),
     min_price: float | None = Query(None, description="Minsta pris"),
-    max_price: float | None = Query(None, description="Högsta pris")
+    max_price: float | None = Query(None, description="Högsta pris"),
+    session: AsyncSession = Depends(get_database_session)
 ):
-    """
-    Alla parametrar är valfria och kan kombineras.
-    Exempel: /products/search?name=skidor&in_stock=true&min_price=1000
-    """
-    try:
-        results = ProductService.search_products(
-            name=name,
-            in_stock=in_stock,
-            min_price=min_price,
-            max_price=max_price
-        )
-        if not results:
-            raise HTTPException(status_code=404, detail="Inga produkter hittades.")
-        return results
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"{str(e)}")
+    return await ProductService.search_products(
+        session=session,
+        name=name,
+        in_stock=in_stock,
+        min_price=min_price,
+        max_price=max_price
+    )
 
 
 @router.get("/products/{product_id}", response_model=Product)
-def get_by_id_endpoint(product_id: int):
-    """
-        Utför en id sökning
-    """
-    try:
-        return ProductService.get_product_by_id(product_id)
-    except ProductError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+async def get_by_id_endpoint(
+    product_id: UUID,
+    session: AsyncSession = Depends(get_database_session)
+):
+    return await ProductService.get_product_by_id(session, product_id)
 
 
-
-
-# Lägger till 1 product
-# @router.post("/products/", response_model=Product)
-# def create_product(product: Product):
-#     return ProductService.create_product(product)
+@router.post("/products", response_model=Product, status_code=201)
+async def create_product_endpoint(
+    product: ProductCreate,
+    session: AsyncSession = Depends(get_database_session)
+):
+    return await ProductService.create_product(session, product)
 

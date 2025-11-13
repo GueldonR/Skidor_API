@@ -44,7 +44,7 @@ def seed_products(num_products: int):
     finally:
         session.close()
 
-# Konfig för skriptets körning 
+# Skriptets parameter
 # Exempel - python -m src.data.seed_products <antal_produkter>
 if __name__ == "__main__":
     if len(sys.argv) != 2:

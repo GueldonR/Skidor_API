@@ -15,3 +15,10 @@ services:
 # fixa vart volymerna pekar på
 volumes:
   postgres_data:
+
+
+# Kommandon för att hantera containern:
+
+    # Starta containern: docker-compose -f src/docker/docker-compose.yml up -d
+    # Stoppa containern (men data behålls): docker-compose -f src/docker/docker-compose.yml down
+    # Ta bort container och data: docker-compose -f src/docker/docker-compose.yml down -v
