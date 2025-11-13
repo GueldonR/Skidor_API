@@ -4,7 +4,7 @@ from sqlalchemy import select, and_
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..schemas.schemas import Product, ProductCreate
-from ..data.db.future_db import Product as ProductDB
+from ..data.db.db_config import Product as ProductDB
 from ..exceptions.exceptions import ProductError, ProductNotFoundError, ProductValidationError
 
 

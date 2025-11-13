@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from .routers.product_r import router as product_router
-from .data.db.future_db import initialize_database_tables
+from .data.db.db_config import initialize_database_tables
 from .exceptions.exceptions import ProductError, ProductNotFoundError, ProductValidationError
 from contextlib import asynccontextmanager
 
@@ -17,7 +17,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Centraliserad exception handler för att eliminera redundans
+# Centraliserad exception handler
 @app.exception_handler(ProductNotFoundError)
 async def product_not_found_handler(request: Request, exc: ProductNotFoundError):
     return JSONResponse(

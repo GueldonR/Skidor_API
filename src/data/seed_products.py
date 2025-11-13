@@ -3,7 +3,7 @@ import random
 from faker import Faker
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from .db.future_db import Product
+from .db.db_config import Product
 
 # Ett skript för att skapa produkter i databasen
 # Kör med: python -m src.data.seed_products <antal_produkter>
