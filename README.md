@@ -10,26 +10,32 @@ FastAPI POC för produktinformation.
 pip install -r requirements.txt
 ```
 
-2. Starta PostgreSQL:
+2. Kolla containerstatus (behövs inte första start)
+
+```bash
+   docker ps -a
+```
+
+3. Starta PostgreSQL:
 
 ```bash
 cd src/docker
 docker-compose up -d
 ```
 
-3. Starta API:et (från projektets root):
+4. Starta API:et (från projektets root):
 
 ```bash
 python -m uvicorn src.main:app --reload
 ```
 
-4. Populera databasen:
+5. Populera databasen:
 
 ```bash
 python -m src.data.seed_products 50
 ```
 
-5. Dubbelkolla databasinnehåll:
+6. Dubbelkolla databasinnehåll:
 
 Via API:
 
@@ -47,7 +53,7 @@ docker exec -it skidor_postgres psql -U skidor_user -d skidor_db -c "SELECT COUN
 docker exec -it skidor_postgres psql -U skidor_user -d skidor_db -c "SELECT * FROM products LIMIT 10;"
 ```
 
-Notera dessa API Endpoints:
+## Notera dessa API Endpoints:
 
 - `GET /` - Välkomstmeddelande
 - `GET /products` - Lista alla produkter
