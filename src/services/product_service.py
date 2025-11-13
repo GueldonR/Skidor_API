@@ -1,5 +1,8 @@
 from ..schemas.schemas import Product
 from ..data.mock.mock_product_data import product_data
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import SQLAlchemyError
+from ..data.db.future_db import Product
 
 # Service lager med är affärslogik
 
@@ -43,9 +46,10 @@ class ProductService:
         if max_price is not None:
             result = [p for p in result if p.price <= max_price]
         
+        if min_price is not None and max_price is not None and min_price > max_price:
+            raise ProductError("min_price kan inte vara högre än max_price.")
+        
         return result
-
-
 
 
     #@staticmethod

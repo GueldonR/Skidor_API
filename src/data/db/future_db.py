@@ -7,7 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 
-DATABASE_URL = "sqlite+aiosqlite:///./warehouse.db"
+DATABASE_URL="postgresql+asyncpg://skidor_user:skidor_pass@localhost:5432/skidor_db"
 
 class Base(DeclarativeBase):
     pass

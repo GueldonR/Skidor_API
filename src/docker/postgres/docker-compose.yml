@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15
+    container_name: skidor_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: skidor_user
+      POSTGRES_PASSWORD: skidor_pass
+      POSTGRES_DB: skidor_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+        - ./src/docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+# fixa vart volymerna pekar på
+volumes:
+  postgres_data:
