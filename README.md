@@ -29,7 +29,7 @@ docker-compose up -d
 python -m uvicorn src.main:app --reload
 ```
 
-5. Populera databasen:
+5. Populera databasen (från projektets root):
 
 ```bash
 python -m src.data.seed_products 50

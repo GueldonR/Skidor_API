@@ -16,6 +16,8 @@ class ProductService:
         try:
             result = await session.execute(select(ProductDB))
             db_products = result.scalars().all()
+            if not db_products:
+                raise ProductNotFoundError("No products found")
             return [Product.model_validate(p) for p in db_products]
         except SQLAlchemyError as e:
             raise ProductError(f"Failed to retrieve products: {str(e)}")
@@ -30,7 +32,7 @@ class ProductService:
             db_product = result.scalar_one_or_none()
             
             if db_product is None:
-                raise ProductNotFoundError(f"Produkt med id {product_id} hittades inte")
+                raise ProductNotFoundError(f"Product with id {product_id} not found")
             
             return Product.model_validate(db_product)
         except SQLAlchemyError as e:
@@ -47,7 +49,7 @@ class ProductService:
         try:
             # Om min_price är högre än max_price, kasta ett valideringsfel
             if min_price is not None and max_price is not None and min_price > max_price:
-                raise ProductValidationError("min_price kan inte vara högre än max_price")
+                raise ProductValidationError("min_price cannot be higher than max_price")
             
             # Skapar fråge-filter
             query = select(ProductDB)
@@ -67,11 +69,12 @@ class ProductService:
             
             if conditions:
                 query = query.where(and_(*conditions))
-            
+            else:
+                raise ProductValidationError("Please provide at least one search parameter.")
             result = await session.execute(query)
             db_products = result.scalars().all()
             return [Product.model_validate(p) for p in db_products]
-            
+
         except SQLAlchemyError as e:
             raise ProductError(f"Failed to search products: {str(e)}")
     
@@ -83,7 +86,8 @@ class ProductService:
                 name=product_data.name,
                 description=product_data.description,
                 price=product_data.price,
-                in_stock=product_data.in_stock
+                in_stock=product_data.in_stock,
+                stock_quantity=product_data.stock_quantity
             )
             
             session.add(db_product)

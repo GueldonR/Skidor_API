@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
+
 from .routers.product_r import router as product_router
 from .data.db.db_config import initialize_database_tables
 from .exceptions.exceptions import ProductError, ProductNotFoundError, ProductValidationError
