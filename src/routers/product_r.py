@@ -2,6 +2,8 @@ from uuid import UUID
 from fastapi import APIRouter, Query, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.core.auth import get_api_key
+
 from ..schemas.schemas import Product, ProductCreate
 from ..services.product_service import ProductService
 from ..data.db.db_config import get_database_session
@@ -9,7 +11,7 @@ from ..data.db.db_config import get_database_session
 router = APIRouter(tags=["Product endpoints"])
 
 
-@router.get("/products", response_model=list[Product], responses={'200': {'description': 'List of products'}, '404': {'description': 'No products found'}})
+@router.get("/products", response_model=list[Product], responses={'200': {'description': 'List of products'}, '404': {'description': 'No products found'}}, dependencies=[Depends(get_api_key)])
 async def list_products_endpoint(
     session: AsyncSession = Depends(get_database_session)
 ):
