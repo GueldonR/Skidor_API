@@ -3,6 +3,8 @@ from fastapi.security import APIKeyHeader, APIKeyQuery
 
 # notera att detta är en fake auth, inte nära production alls
 
+# Hade gjorts till en .env¨
+# Nycklarna hade distribuerats från ett separat API eller tredjepart-vendor
 API_KEYS = [
     "67",
 ]
@@ -28,7 +30,7 @@ def get_api_key(
         return api_key_header
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid or missing API Key",
+        detail="Invalid API Key",
     )
 
 
