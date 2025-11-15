@@ -1,5 +1,4 @@
-from fastapi import FastAPI, Request, status, Security
-from fastapi.security import APIKeyHeader, APIKeyQuery
+from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
 from .routers.product_r import router as product_router
