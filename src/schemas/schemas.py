@@ -26,3 +26,4 @@ class ProductCreate(BaseModel):
     in_stock: bool = True
     stock_quantity: int = Field(default=0, description="The number of items in stock")
 
+# Lägg till fler Scheman nedan 
