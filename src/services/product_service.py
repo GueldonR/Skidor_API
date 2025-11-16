@@ -73,6 +73,8 @@ class ProductService:
                 raise ProductValidationError("Please provide at least one search parameter.")
             result = await session.execute(query)
             db_products = result.scalars().all()
+            if not db_products:
+                raise ProductNotFoundError(f"No products found")
             return [Product.model_validate(p) for p in db_products]
 
         except SQLAlchemyError as e:
