@@ -26,10 +26,14 @@ class Product(Base):
     last_updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 # Skapar async engine för att connecta till databasen
-engine = create_async_engine(DATABASE_URL)
+engine = create_async_engine(
+    DATABASE_URL,
+    pool_size=10,               # Antal connections att hålla i poolen
+    max_overflow=20,            # Extra connections beyond pool_size       
+    pool_pre_ping=True,     
+    pool_timeout=30,        
+)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
-
-
 async def initialize_database_tables():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

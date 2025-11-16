@@ -4,7 +4,7 @@ from sqlalchemy import select, and_
 from sqlalchemy.exc import SQLAlchemyError
 
 from ..schemas.schemas import Product, ProductCreate
-from ..data.db.db_config import Product as ProductDB
+from ..data.db.db_config import Product as ProductTable
 from ..exceptions.exceptions import ProductError, ProductNotFoundError, ProductValidationError
 
 
@@ -12,9 +12,10 @@ class ProductService:
     """Service lager för affärslogik och databasinteraktioner"""
     
     @staticmethod
-    async def get_all_products(session: AsyncSession) -> list[Product]:
+    async def get_all_products(session: AsyncSession, offset: int = 0, limit: int = 20) -> list[Product]:
         try:
-            result = await session.execute(select(ProductDB))
+            query = select(ProductTable).order_by(ProductTable.created_at.desc()).offset(offset).limit(limit)
+            result = await session.execute(query)
             db_products = result.scalars().all()
             if not db_products:
                 raise ProductNotFoundError("No products found")
@@ -26,7 +27,7 @@ class ProductService:
     async def get_product_by_id(session: AsyncSession, product_id: UUID) -> Product:
         try:
             result = await session.execute(
-                select(ProductDB).where(ProductDB.id == product_id)
+                select(ProductTable).where(ProductTable.id == product_id)
             )
             # Kräver att det finns exakt en produkt
             db_product = result.scalar_one_or_none()
@@ -52,20 +53,20 @@ class ProductService:
                 raise ProductValidationError("min_price cannot be higher than max_price")
             
             # Skapar fråge-filter
-            query = select(ProductDB)
+            query = select(ProductTable)
             conditions = []
             
             if name:
-                conditions.append(ProductDB.name.ilike(f"%{name}%"))
+                conditions.append(ProductTable.name.ilike(f"%{name}%"))
             
             if in_stock is not None:
-                conditions.append(ProductDB.in_stock == in_stock)
+                conditions.append(ProductTable.in_stock == in_stock)
             
             if min_price is not None:
-                conditions.append(ProductDB.price >= min_price)
+                conditions.append(ProductTable.price >= min_price)
             
             if max_price is not None:
-                conditions.append(ProductDB.price <= max_price)
+                conditions.append(ProductTable.price <= max_price)
             
             if conditions:
                 query = query.where(and_(*conditions))
@@ -83,7 +84,7 @@ class ProductService:
     @staticmethod
     async def create_product(session: AsyncSession, product_data: ProductCreate) -> Product:
         try:
-            db_product = ProductDB(
+            db_product = ProductTable(
                 SKU=product_data.SKU,
                 name=product_data.name,
                 description=product_data.description,
