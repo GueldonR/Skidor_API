@@ -2,7 +2,7 @@ from typing import AsyncGenerator
 from datetime import datetime
 import uuid
 
-from sqlalchemy import Column, String, Boolean, Float, DateTime, Integer
+from sqlalchemy import Column, Computed, String, Boolean, Float, DateTime, Integer
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
@@ -20,7 +20,7 @@ class Product(Base):
     name = Column(String, nullable=False)
     description = Column(String, nullable=True)
     price = Column(Float, nullable=False)
-    in_stock = Column(Boolean, nullable=False)
+    in_stock = Column(Boolean, Computed("stock_quantity > 0") , nullable=False)
     stock_quantity = Column(Integer, nullable=False, default=0)
     created_at = Column(DateTime, default=datetime.utcnow)
     last_updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

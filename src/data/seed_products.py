@@ -27,13 +27,13 @@ def seed_products(num_products: int):
 
     try:
         for _ in range(num_products):
-            stock_qty = random.randint(0, 100000) 
+            stock_qty = random.randint(0, 400) * random.randint(0, 150) # Bias till lägra nummer för att demonstrera in_stock fältet
             product = Product(
                 SKU=faker.bothify(text='SKU-####'),
                 name=random.choice(PRODUCT_NAMES),
                 description=faker.text(max_nb_chars=100),
                 price=round(random.uniform(200, 10000), 2),
-                in_stock=random.choice([True, False]),
+                #in_stock=random.choice([True, False]),
                 stock_quantity=stock_qty  # Lägg till lagerantal
             )
             session.add(product)

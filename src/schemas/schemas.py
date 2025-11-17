@@ -10,8 +10,8 @@ class Product(BaseModel):
     price: float = Field(description="The price of the product")
     in_stock: bool = Field(default=True, description="The stock status of the product")
     stock_quantity: int = Field(default=0, description="The number of items in stock")
-    created_at: datetime | None = Field(default=None, description="The date and time the product was created")
-    last_updated: datetime | None = Field(default=None, description="The date and time the product was last updated")
+    created_at: datetime | None = Field(default=None, description="The date and time the product was created, calculated by the database")
+    last_updated: datetime | None = Field(default=None, description="The date and time the product was last updated, calculated by the database")
 
     class Config:
         from_attributes = True  # Allows conversion from SQLAlchemy models
@@ -23,7 +23,7 @@ class ProductCreate(BaseModel):
     name: str
     description: str | None = None
     price: float
-    in_stock: bool = True
+    in_stock: bool # automatically calculated by the database
     stock_quantity: int = Field(default=0, description="The number of items in stock")
 
 # Lägg till fler Scheman nedan 
