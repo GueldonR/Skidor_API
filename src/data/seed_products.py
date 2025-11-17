@@ -27,7 +27,7 @@ def seed_products(num_products: int):
 
     try:
         for _ in range(num_products):
-            stock_qty = random.randint(0, 400) * random.randint(0, 150) # Bias till lägra nummer för att demonstrera in_stock fältet
+            stock_qty = random.randint(0, 60000) * random.randint(0, 1) # Bias till lägra nummer för att demonstrera in_stock fältet
             product = Product(
                 SKU=faker.bothify(text='SKU-####'),
                 name=random.choice(PRODUCT_NAMES),

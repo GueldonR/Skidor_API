@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status, Security
-from fastapi.security import APIKeyHeader, APIKeyQuery
+from fastapi.security import APIKeyHeader
 
 # notera att detta är en fake auth, inte nära production alls
 
