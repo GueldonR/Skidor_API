@@ -6,8 +6,9 @@ from .data.db.db_config import initialize_database_tables
 from .exceptions.exceptions import ProductError, ProductNotFoundError, ProductValidationError
 from contextlib import asynccontextmanager
 
+
 @asynccontextmanager
-async def lifespan (app: FastAPI):
+async def lifespan(app: FastAPI):
     await initialize_database_tables()
     yield
 
@@ -16,16 +17,20 @@ app = FastAPI(
     description="Tidig prototyp",
     version="1.1.0",
     lifespan=lifespan
-    
+
 )
 
-# Centraliserad exception handler
+# Centralised exception handlers
+# to do: add more exception handlers for other exceptions
+
+
 @app.exception_handler(ProductNotFoundError)
 async def product_not_found_handler(request: Request, exc: ProductNotFoundError):
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
         content={"detail": str(exc)}
     )
+
 
 @app.exception_handler(ProductValidationError)
 async def product_validation_handler(request: Request, exc: ProductValidationError):
@@ -34,6 +39,7 @@ async def product_validation_handler(request: Request, exc: ProductValidationErr
         content={"detail": str(exc)}
     )
 
+
 @app.exception_handler(ProductError)
 async def product_error_handler(request: Request, exc: ProductError):
     return JSONResponse(
@@ -41,11 +47,11 @@ async def product_error_handler(request: Request, exc: ProductError):
         content={"detail": str(exc)}
     )
 
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the POC Eskitech API", "version": "1.1.0"}
 
+
 # router för product endpointerna
 app.include_router(product_router)
-
-

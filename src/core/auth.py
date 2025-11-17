@@ -11,6 +11,7 @@ API_KEYS = [
 
 api_key_header = APIKeyHeader(name="x-api-key", auto_error=True)
 
+
 def get_api_key(
     api_key_header: str = Security(api_key_header),
 ) -> str:
@@ -32,6 +33,3 @@ def get_api_key(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid API Key",
     )
-
-
-

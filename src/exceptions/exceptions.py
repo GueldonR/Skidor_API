@@ -14,4 +14,3 @@ class ProductNotFoundError(ProductError):
 class ProductValidationError(ProductError):
     """Valideringsfel (t.ex. ogiltiga parametrar)"""
     pass
-

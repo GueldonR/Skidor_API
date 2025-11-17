@@ -1,3 +1,5 @@
+from slowapi.util import get_remote_address
+from slowapi import Limiter
 from uuid import UUID
 from fastapi import APIRouter, Query, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,25 +15,27 @@ router = APIRouter(tags=["Product endpoints"])
 
 
 # init of mock rate-limiter, prod = redis
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 limiter = Limiter(
     key_func=get_remote_address,
     strategy="fixed-window",
     storage_uri="memory://",
-    enabled=True, # Control rate limiting
-) 
+    enabled=True,  # Control rate limiting
+)
 
 # Default values for pagination
 DEFAULT_LIMIT = 20
 DEFAULT_OFFSET = 0
 # ge and le = range of values for the offset and limit
+
+
 @router.get("/products", response_model=list[Product], responses={'200': {'description': 'List of products'}, '401': {'description': 'Invalid API key'}, '403': {'description': 'Not authenticated'}, '404': {'description': 'No products found'}}, dependencies=[Depends(get_api_key)])
 @limiter.limit("20/minute", per_method=True)
 async def list_products_endpoint(
     request: Request,
-    offset: int = Query(DEFAULT_OFFSET, ge=0, description="Number of items to skip"),
-    limit: int = Query(DEFAULT_LIMIT, ge=1, le=100, description="Number of items to return"),
+    offset: int = Query(DEFAULT_OFFSET, ge=0,
+                        description="Number of items to skip"),
+    limit: int = Query(DEFAULT_LIMIT, ge=1, le=100,
+                       description="Number of items to return"),
     session: AsyncSession = Depends(get_database_session),
 ):
     """
@@ -42,10 +46,10 @@ async def list_products_endpoint(
     return await ProductService.get_all_products(session, offset=offset, limit=limit)
 
 
-@router.patch("/products/{product_id}/update-stock",response_model=Product, responses={'200': {'description': 'Product updated'}, '401': {'description': 'Invalid API key'}, '403': {'description': 'Not authenticated'}, '404': {'description': 'Product not found'}}, dependencies=[Depends(get_api_key)])
+@router.patch("/products/{product_id}/update-stock", response_model=Product, responses={'200': {'description': 'Product updated'}, '401': {'description': 'Invalid API key'}, '403': {'description': 'Not authenticated'}, '404': {'description': 'Product not found'}}, dependencies=[Depends(get_api_key)])
 async def update_stock_quantity_endpoint(
     request: Request,
-    product_id: UUID ,
+    product_id: UUID,
     stock_quantity: ProductUpdateStockQuantity,
     session: AsyncSession = Depends(get_database_session)
 ):
@@ -55,7 +59,7 @@ async def update_stock_quantity_endpoint(
     Example request body and url:
     ```
     PATCH /products/123e4567-e89b-12d3-a456-426614174000/update-stock
-   
+
     {
       "stock_quantity": 42
     }
@@ -68,15 +72,17 @@ async def update_stock_quantity_endpoint(
 @router.get("/products/search", response_model=list[Product], responses={'200': {'description': 'Products found'}, '404': {'description': 'No products found'}, '400': {'description': 'Invalid search parameters'}})
 async def search_products_endpoint(
     request: Request,
-    name: str | None = Query(None, description="Search by name (partial matching)"),
-    in_stock: bool | None = Query(None, description="Filter by in_stock status"),
+    name: str | None = Query(
+        None, description="Search by name (partial matching)"),
+    in_stock: bool | None = Query(
+        None, description="Filter by in_stock status"),
     min_price: float | None = Query(None, description="Minimum price"),
     max_price: float | None = Query(None, description="Maximum price"),
     session: AsyncSession = Depends(get_database_session)
 ):
     """
     Search for products by one or more of the following parameters:
-    
+
     * `name` - search by name (partial matching) 
 
     * `in_stock` - filter by in_stock status
@@ -98,6 +104,7 @@ async def search_products_endpoint(
         min_price=min_price,
         max_price=max_price
     )
+
 
 @router.get("/products/{product_id}", response_model=Product, responses={'200': {'description': 'Product found'}, '404': {'description': 'Product not found'}})
 async def get_by_id_endpoint(
@@ -124,4 +131,3 @@ async def get_by_id_endpoint(
 #     session: AsyncSession = Depends(get_database_session)
 # ):
 #     return await ProductService.create_product(session, product)
-
