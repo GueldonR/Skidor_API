@@ -68,11 +68,11 @@ class ProductService:
         max_price: float | None = None
     ) -> list[Product]:
         try:
-            # Om min_price är högre än max_price, kasta ett valideringsfel
+            # validate the search parameters
             if min_price is not None and max_price is not None and min_price > max_price:
                 raise ProductValidationError(
                     "min_price cannot be higher than max_price")
-
+            # to do: refactor these if statement below, into model logic validation
             if min_price is not None and min_price < 0:
                 raise ProductValidationError(
                     "min_price cannot be less than 0")
@@ -81,11 +81,11 @@ class ProductService:
                 raise ProductValidationError(
                     "max_price cannot be less than 0")
 
-            # Skapar fråge-filter och sorterar efter senast uppdaterad
+            # build the query
             query = select(ProductTable).order_by(
                 ProductTable.last_updated.desc())
             conditions = []
-            # todo: hitta ett finare sätt att queryen
+            # todo: find a better way to build the query
             if name:
                 conditions.append(ProductTable.name.ilike(f"%{name}%"))
 
