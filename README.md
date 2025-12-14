@@ -1,6 +1,8 @@
 # Skidor API
 
-FastAPI POC för produktinformation.
+FastAPI POC for product information!
+
+<img src="/demo_attachements/Demo_swagger_image.png" alt="Demo Picture" style="border: 2px solid darkgrey;" width="600"/>
 
 ## Setup
 
