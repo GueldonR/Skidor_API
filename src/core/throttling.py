@@ -1,7 +1,10 @@
-# här hade man moduliserat koden för rate limiting som nu ligger i main istället. 
-# man hade kunnat använda redis via docker för cachning av request-rates
 
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
-
-
-
+limiter = Limiter(
+    key_func=get_remote_address,
+    strategy="fixed-window",
+    storage_uri="memory://",
+    enabled=True,
+)

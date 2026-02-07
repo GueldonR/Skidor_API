@@ -4,3 +4,5 @@ venv
 .editorconfig
 warehouse.db
 eskitech_poc
+todolist.txt
+.DS_Store

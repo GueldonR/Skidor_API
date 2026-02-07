@@ -1,0 +1,17 @@
+1. Refactor data model
+
+    2. Add users 
+    3. Add dashboards 
+
+2. Create several basemodels for requests
+
+3. Add caching of frequent request, using redis
+
+4. Add logging - With prometheus
+    4.1 Create internal endpoints
+
+5. Refactor auth with JWT
+
+6. Centralize error handling
+
+7. Refactor main.py
