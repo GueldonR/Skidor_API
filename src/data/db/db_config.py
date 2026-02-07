@@ -7,26 +7,14 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+from .tables import *
+
+
 DATABASE_URL = "postgresql+asyncpg://skidor_user:skidor_pass@localhost:5432/skidor_db"
 
 
 class Base(DeclarativeBase):
     pass
-
-
-class Product(Base):
-    __tablename__ = "products"
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    SKU = Column(String, nullable=False)
-    name = Column(String, nullable=False)
-    description = Column(String, nullable=True)
-    price = Column(Float, nullable=False)
-    in_stock = Column(Boolean, Computed("stock_quantity > 0"), nullable=False)
-    stock_quantity: Mapped[int] = mapped_column(nullable=False, default=0)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    last_updated = Column(DateTime, default=datetime.utcnow,
-                          onupdate=datetime.utcnow)
 
 
 # Skapar async engine för att connecta till databasen
