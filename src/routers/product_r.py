@@ -7,7 +7,7 @@ from src.core.auth import get_api_key
 
 from src.core.throttling import limiter
 from src.core.constants import DEFAULT_LIMIT, DEFAULT_OFFSET
-from src.schemas.product_schema import Product, ProductCreate, ProductUpdateStockQuantity, ProductGetAllFields
+from src.schemas import ProductUpdateStockQuantity, ProductGetAllFields
 from src.services.product_service import ProductService
 from src.data.db.db_config import get_database_session
 

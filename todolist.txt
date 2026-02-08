@@ -1,27 +1,24 @@
-# Todo
+Skidor API todo
 
-## Data & models
-1. Refactor data model
-   - Add users
-   - Add dashboards
-2. Create several base models for requests
-3. Refactor the data seeding script
+Data & models
+- Refactor models and schemas:
+  - Add users
+  - Add dashboards
+  - ??
+- Refactor data seeding script (align with new models)
 
-## API & services
-4. Add order product service
-   - Model, schema, route, service (bcrypt)
-   - Handle rate limiting and race conditions
-5. Create a flavor system? (TBD)
+Features – API & services
+- Order product service:
+  - Model, schema, route, service
+  - Auth/security (e.g. bcrypt where relevant)
+  - Rate limiting and race conditions
+  - Separate internal vs external endpoints??
+- Auth: refactor with JWT
 
-## Infrastructure & ops
-6. Add caching for frequent requests (Redis)
-7. Add logging with Prometheus
-   - Create internal endpoints
-8. Centralize error handling
+Other tasks
+- Caching and throttling for LRU requests and spam-flags(e.g. Redis)
+- Logging and metrics (Prometheus)
+  - Internal endpoints for health/metrics
+- Centralized error handling
 
-## Auth & app
-9. Refactor auth with JWT
-10. Refactor main.py
-
----
-Priority order: env/config + secrets → logging → health check → tests → migrations → CORS and 500 handling → versioning and deployment.
+Priority order: 1 (models + schemas) → 2 (seeding) → 3 (order service + auth) → 4 (main.py) → 5 (caching, logging, errors)

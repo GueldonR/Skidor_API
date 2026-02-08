@@ -1,4 +1,4 @@
-from src.data.db.base import Base
+from ..base import Base
 from datetime import datetime, timezone
 import uuid
 

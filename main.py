@@ -14,18 +14,15 @@ from src.exceptions.exceptions import (
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await initialize_database_tables()
-    yield
+    yield  # runtime of the app, can add shutdown code (if needed)
 
 
 app = FastAPI(
-    title="Eskitech POC Produkt-API",
-    description="Tidig prototyp",
+    title="POC Product API",
+    description="A proof-of-concept API for exposing product data",
     version="1.1.0",
     lifespan=lifespan,
 )
-
-# Centralised exception handlers
-
 
 @app.exception_handler(ProductNotFoundError)
 async def product_not_found_handler(request: Request, exc: ProductNotFoundError):
