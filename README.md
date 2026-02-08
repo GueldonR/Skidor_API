@@ -28,7 +28,13 @@ docker-compose up -d
 4. Starta API:et (från projektets root):
 
 ```bash
-python -m uvicorn src.main:app --reload
+python -m uvicorn main:app --reload
+```
+
+eller
+
+```bash
+python main.py
 ```
 
 5. Populera databasen (från projektets root):

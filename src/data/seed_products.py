@@ -3,7 +3,7 @@ import random
 from faker import Faker
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from .db.db_config import Product
+from .db.models import ProductDatabaseTable
 
 # Ett skript för att skapa produkter i databasen
 # Kör med: python -m src.data.seed_products <antal_produkter>
@@ -30,7 +30,7 @@ def seed_products(num_products: int):
         for _ in range(num_products):
             # Bias till lägra nummer för att demonstrera in_stock fältet
             stock_qty = random.randint(0, 60000) * random.randint(0, 1)
-            product = Product(
+            product = ProductDatabaseTable(
                 SKU=faker.bothify(text='SKU-####'),
                 name=random.choice(PRODUCT_NAMES),
                 description=faker.text(max_nb_chars=100),

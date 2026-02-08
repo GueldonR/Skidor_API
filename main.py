@@ -1,10 +1,14 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
-
-from .routers.product_r import router as product_router
-from .data.db.db_config import initialize_database_tables
-from .exceptions.exceptions import ProductError, ProductNotFoundError, ProductValidationError
 from contextlib import asynccontextmanager
+
+from src.routers.product_r import router_product
+from src.data.db.db_config import initialize_database_tables
+from src.exceptions.exceptions import (
+    ProductError,
+    ProductNotFoundError,
+    ProductValidationError,
+)
 
 
 @asynccontextmanager
@@ -12,23 +16,22 @@ async def lifespan(app: FastAPI):
     await initialize_database_tables()
     yield
 
+
 app = FastAPI(
     title="Eskitech POC Produkt-API",
     description="Tidig prototyp",
     version="1.1.0",
-    lifespan=lifespan
-
+    lifespan=lifespan,
 )
 
 # Centralised exception handlers
-# to do: add more exception handlers for other exceptions
 
 
 @app.exception_handler(ProductNotFoundError)
 async def product_not_found_handler(request: Request, exc: ProductNotFoundError):
     return JSONResponse(
         status_code=status.HTTP_404_NOT_FOUND,
-        content={"detail": str(exc)}
+        content={"detail": str(exc)},
     )
 
 
@@ -36,7 +39,7 @@ async def product_not_found_handler(request: Request, exc: ProductNotFoundError)
 async def product_validation_handler(request: Request, exc: ProductValidationError):
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST,
-        content={"detail": str(exc)}
+        content={"detail": str(exc)},
     )
 
 
@@ -44,7 +47,7 @@ async def product_validation_handler(request: Request, exc: ProductValidationErr
 async def product_error_handler(request: Request, exc: ProductError):
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": str(exc)}
+        content={"detail": str(exc)},
     )
 
 
@@ -53,5 +56,9 @@ def read_root():
     return {"message": "Welcome to the POC Eskitech API", "version": "1.1.0"}
 
 
-# router för product endpointerna
-app.include_router(product_router)
+app.include_router(router_product)
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

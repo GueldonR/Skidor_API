@@ -20,10 +20,39 @@ class Product(BaseModel):
         default=None, description="The date and time the product was last updated, calculated by the database")
 
     class Config:
-        from_attributes = True  # Allows conversion from SQLAlchemy models
+        from_attributes = True  # To not require dict input and allow ORM models
 
 
-class ProductGet(Product):
+class ProductSearchSKU(BaseModel):
+    """When searching for products by SKU"""
+    SKU: str = Field(description="The stock keeping unit of the product")
+
+
+class ProductSearchAdvanced(BaseModel):
+    """When searching for products by SKU"""
+    SKU: str = Field(description="The stock keeping unit of the product")
+    name: str | None = Field(
+        None, description="Search by name (partial matching)")
+    in_stock: bool | None = Field(
+        None, description="Filter by in_stock status")
+    min_price: float | None = Field(None, description="Minimum price")
+    max_price: float | None = Field(None, description="Maximum price")
+
+
+class ProductGetAllFields(BaseModel):
+    """Returns all products, exposing right columns to consumers"""
+
+    SKU: str = Field(description="The stock keeping unit of the product")
+    name: str = Field(description="The name of the product")
+    description: str | None = Field(
+        default=None, description="The description of the product")
+    price: float = Field(description="The price of the product")
+    stock_quantity: int = Field(description="The number of items in stock")
+    last_updated: datetime | None = Field(
+        default=None, description="The date and time the product was last updated, calculated by the database")
+
+
+class ProductById(BaseModel):
     """Fetches a product, exposing right columns to consumers"""
 
     SKU: str = Field(description="The stock keeping unit of the product")
@@ -36,7 +65,7 @@ class ProductGet(Product):
         default=None, description="The date and time the product was last updated, calculated by the database")
 
 
-class ProductCreate(Product):
+class ProductCreate(BaseModel):
     """Create a new product"""
     SKU: str
     name: str
@@ -46,7 +75,7 @@ class ProductCreate(Product):
         default=0, description="The number of items in stock")
 
 
-class ProductUpdateStockQuantity(Product):
+class ProductUpdateStockQuantity(BaseModel):
     """what to send in for updating the stock quantity"""
     stock_quantity: int = Field(
         ge=0, description="The new number of items in stock")

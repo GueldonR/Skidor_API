@@ -5,18 +5,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.auth import get_api_key
 
-from ..core.throttling import limiter
-from ..core.constants import DEFAULT_LIMIT, DEFAULT_OFFSET
-from ..schemas.product import Product, ProductCreate, ProductUpdateStockQuantity, ProductGet
-from ..services.product_service import ProductService
-from ..data.db.db_config import get_database_session
+from src.core.throttling import limiter
+from src.core.constants import DEFAULT_LIMIT, DEFAULT_OFFSET
+from src.schemas.product_schema import Product, ProductCreate, ProductUpdateStockQuantity, ProductGetAllFields
+from src.services.product_service import ProductService
+from src.data.db.db_config import get_database_session
 
 
-router = APIRouter(tags=["Product endpoints"],
-                   dependencies=[Depends(get_api_key)])
+router_product = APIRouter(tags=["Product endpoints"],
+                           dependencies=[Depends(get_api_key)])
 
 
-@router.get("/products", response_model=list[ProductGet], responses={'200': {'description': 'List of products'}, '401': {'description': 'Invalid API key'}, '403': {'description': 'Not authenticated'}, '404': {'description': 'No products found'}}, dependencies=[Depends(get_api_key)])
+@router_product.get("/products", response_model=list[ProductGetAllFields], responses={'200': {'description': 'List of products'}, '401': {'description': 'Invalid API key'}, '403': {'description': 'Not authenticated'}, '404': {'description': 'No products found'}}, dependencies=[Depends(get_api_key)])
 @limiter.limit("20/minute", per_method=True)
 async def list_products_endpoint(
     request: Request,
@@ -34,7 +34,7 @@ async def list_products_endpoint(
     return await ProductService.get_all_products(session, offset=offset, limit=limit)
 
 
-@router.patch("/products/{product_id}/update-stock", response_model=ProductUpdateStockQuantity, responses={'200': {'description': 'Product updated'}, '401': {'description': 'Invalid API key'}, '403': {'description': 'Not authenticated'}, '404': {'description': 'Product not found'}}, dependencies=[Depends(get_api_key)])
+@router_product.patch("/products/{product_id}/update-stock", response_model=ProductUpdateStockQuantity, responses={'200': {'description': 'Product updated'}, '401': {'description': 'Invalid API key'}, '403': {'description': 'Not authenticated'}, '404': {'description': 'Product not found'}}, dependencies=[Depends(get_api_key)])
 async def update_stock_quantity_endpoint(
     request: Request,
     product_id: UUID,
@@ -57,7 +57,7 @@ async def update_stock_quantity_endpoint(
     return await ProductService.update_stock_quantity(session, product_id, stock_quantity)
 
 
-@router.get("/products/search", response_model=list[ProductGet], responses={'200': {'description': 'Products found'}, '404': {'description': 'No products found'}, '400': {'description': 'Invalid search parameters'}})
+@router_product.get("/products/search", response_model=list[ProductGetAllFields], responses={'200': {'description': 'Products found'}, '404': {'description': 'No products found'}, '400': {'description': 'Invalid search parameters'}})
 async def search_products_endpoint(
     request: Request,
     name: str | None = Query(
@@ -94,7 +94,7 @@ async def search_products_endpoint(
     )
 
 
-@router.get("/products/{product_id}", response_model=ProductGet, responses={'200': {'description': 'Product found'}, '404': {'description': 'Product not found'}})
+@router_product.get("/products/{product_id}", response_model=ProductGetAllFields, responses={'200': {'description': 'Product found'}, '404': {'description': 'Product not found'}})
 async def get_by_id_endpoint(
     request: Request,
     product_id: UUID,

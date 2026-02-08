@@ -1,17 +1,27 @@
+# Todo
+
+## Data & models
 1. Refactor data model
+   - Add users
+   - Add dashboards
+2. Create several base models for requests
+3. Refactor the data seeding script
 
-    2. Add users 
-    3. Add dashboards 
+## API & services
+4. Add order product service
+   - Model, schema, route, service (bcrypt)
+   - Handle rate limiting and race conditions
+5. Create a flavor system? (TBD)
 
-2. Create several basemodels for requests
+## Infrastructure & ops
+6. Add caching for frequent requests (Redis)
+7. Add logging with Prometheus
+   - Create internal endpoints
+8. Centralize error handling
 
-3. Add caching of frequent request, using redis
+## Auth & app
+9. Refactor auth with JWT
+10. Refactor main.py
 
-4. Add logging - With prometheus
-    4.1 Create internal endpoints
-
-5. Refactor auth with JWT
-
-6. Centralize error handling
-
-7. Refactor main.py
+---
+Priority order: env/config + secrets → logging → health check → tests → migrations → CORS and 500 handling → versioning and deployment.

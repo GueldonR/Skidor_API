@@ -1,8 +1,8 @@
-from ..db_config import Base
-from datetime import datetime
+from src.data.db.base import Base
+from datetime import datetime, timezone
 import uuid
 
-from sqlalchemy import Column, Computed, String, Boolean, Float, DateTime
+from sqlalchemy import Computed, String, Boolean, Float, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -38,7 +38,8 @@ class Product(Base):
     )
 
     last_updated: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
     )

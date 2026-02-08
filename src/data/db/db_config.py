@@ -2,19 +2,13 @@ from typing import AsyncGenerator
 from datetime import datetime
 import uuid
 
-from sqlalchemy import Column, Computed, String, Boolean, Float, DateTime, Integer
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-from .tables import *
+from .base import Base
+from .models import *  # Register models with Base.metadata for create_all
 
 
 DATABASE_URL = "postgresql+asyncpg://skidor_user:skidor_pass@localhost:5432/skidor_db"
-
-
-class Base(DeclarativeBase):
-    pass
 
 
 # Skapar async engine för att connecta till databasen

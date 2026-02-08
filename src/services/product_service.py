@@ -3,16 +3,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from sqlalchemy.exc import SQLAlchemyError
 
-from ..schemas.product import ProductGet, ProductCreate, ProductUpdateStockQuantity
-from ..data.db.db_config import Product as ProductDatabaseTable
-from ..exceptions.exceptions import ProductError, ProductNotFoundError, ProductValidationError
+from src.schemas import *
+from src.data.db.models import *
+from src.exceptions.exceptions import ProductError, ProductNotFoundError, ProductValidationError
 
 
 class ProductService:
     """Service lager för affärslogik och databasinteraktioner"""
 
     @staticmethod
-    async def get_all_products(session: AsyncSession, offset: int = 0, limit: int = 20) -> list[ProductGet]:
+    async def get_all_products(session: AsyncSession, offset: int = 0, limit: int = 20) -> list[ProductGetAllFields]:
         try:
             query = select(ProductDatabaseTable).order_by(
                 ProductDatabaseTable.created_at.desc()).offset(offset).limit(limit)
@@ -20,7 +20,7 @@ class ProductService:
             db_products = result.scalars().all()
             if not db_products:
                 raise ProductNotFoundError("No products found")
-            return [ProductGet.model_validate(p) for p in db_products]
+            return [ProductGetAllFields.model_validate(p) for p in db_products]
         except SQLAlchemyError as e:
             raise ProductError(f"Failed to retrieve products: {str(e)}")
 
@@ -39,12 +39,12 @@ class ProductService:
             db_product.stock_quantity = new_stock_quantity.stock_quantity
             await session.commit()
             await session.refresh(db_product)
-            return ProductGet.model_validate(db_product)
+            return ProductGetAllFields.model_validate(db_product)
         except SQLAlchemyError as e:
             raise ProductError(f"Failed to update stock quantity: {str(e)}")
 
     @staticmethod
-    async def get_product_by_id(session: AsyncSession, product_id: UUID) -> ProductGet:
+    async def get_product_by_id(session: AsyncSession, product_id: UUID) -> ProductGetAllFields:
         try:
             result = await session.execute(
                 select(ProductDatabaseTable).where(
@@ -57,7 +57,7 @@ class ProductService:
                 raise ProductNotFoundError(
                     f"Product with id {product_id} not found")
 
-            return ProductGet.model_validate(db_product)
+            return ProductGetAllFields.model_validate(db_product)
         except SQLAlchemyError as e:
             raise ProductError(f"Failed to retrieve product: {str(e)}")
 
@@ -68,7 +68,7 @@ class ProductService:
         in_stock: bool | None = None,
         min_price: float | None = None,
         max_price: float | None = None
-    ) -> list[ProductGet]:
+    ) -> list[ProductGetAllFields]:
         try:
             # validate the search parameters
             if min_price is not None and max_price is not None and min_price > max_price:
@@ -109,7 +109,7 @@ class ProductService:
             db_products = result.scalars().all()
             if not db_products:
                 raise ProductNotFoundError(f"No products found")
-            return [ProductGet.model_validate(p) for p in db_products]
+            return [ProductGetAllFields.model_validate(p) for p in db_products]
 
         except SQLAlchemyError as e:
             raise ProductError(f"Failed to search products: {str(e)}")
