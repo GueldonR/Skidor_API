@@ -3,11 +3,13 @@ Skidor API todo
 Data & models
 - Refactor models and schemas:
   - Add users
-  - Add dashboards
   - ??
 - Refactor data seeding script (align with new models)
 
 Features – API & services
+- Order product service:
+    - Add a user login (provider vs local dilemma)
+
 - Order product service:
   - Model, schema, route, service
   - Auth/security (e.g. bcrypt where relevant)
@@ -16,9 +18,12 @@ Features – API & services
 - Auth: refactor with JWT
 
 Other tasks
-- Caching and throttling for LRU requests and spam-flags(e.g. Redis)
+- Caching and throttling for LRU requests and spam-flags(Redis)
 - Logging and metrics (Prometheus)
   - Internal endpoints for health/metrics
 - Centralized error handling
 
-Priority order: 1 (models + schemas) → 2 (seeding) → 3 (order service + auth) → 4 (main.py) → 5 (caching, logging, errors)
+Before deploying
+- Make a dockerfile 
+
+Priority order: 1 (models + schemas) → 2 (seeding) → 3 (order service + auth) →  4 (caching, logging, errors) → 5 (Dockerfile)
