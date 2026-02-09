@@ -11,10 +11,10 @@ from .db.models import ProductDatabaseTable
 DATABASE_URL = "postgresql://skidor_user:skidor_pass@localhost:5432/skidor_db"
 
 PRODUCT_NAMES = [
-    "Skidor", "Alpinskidor", "Längdskidor", "Skidstavar", "Skidbindningar",
-    "Skidpjäxor", "Skidjacka", "Skidbyxor", "Skidhjälm", "Skidglasögon",
-    "Skidvantar", "Skidmössa", "Skidunderställ", "Skidpulka", "Skidvax",
-    "Premium Skidor", "Racing Skidor", "Backcountry Skidor", "Skidstavar Pro"
+    "Skis", "Alpine Skis", "Cross Country Skis", "Ski Poles", "Ski Bindings",
+    "Ski Boots", "Ski Jacket", "Ski Pants", "Ski Helmet", "Ski Goggles",
+    "Ski Gloves", "Ski Beanie", "Ski Base Layer", "Ski Pulka", "Ski Wax",
+    "Premium Skis", "Racing Skis", "Backcountry Skis", "Pro Ski Poles"
 ]
 
 faker = Faker('sv_SE')
@@ -33,10 +33,12 @@ def seed_products(num_products: int):
             product = ProductDatabaseTable(
                 SKU=faker.bothify(text='SKU-####'),
                 name=random.choice(PRODUCT_NAMES),
+                # 200 to 10,000, 2 decimal
                 description=faker.text(max_nb_chars=100),
                 price=round(random.uniform(200, 10000), 2),
-                # in_stock=random.choice([True, False]),
-                stock_quantity=stock_qty  # Lägg till lagerantal
+                stock_quantity=stock_qty
+                # in_stockk beräknas,
+                # created_at och last_updated hanteras av databasen
             )
             session.add(product)
 

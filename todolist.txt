@@ -5,6 +5,7 @@ Data & models
   - Add users
   - ??
 - Refactor data seeding script (align with new models)
+- Add Alembic for database migrations instead of 'create.all'
 
 Features – API & services
 - Order product service:
@@ -27,3 +28,10 @@ Before deploying
 - Make a dockerfile 
 
 Priority order: 1 (models + schemas) → 2 (seeding) → 3 (order service + auth) →  4 (caching, logging, errors) → 5 (Dockerfile)
+
+
+
+When you wake up tomorrow!!!: 
+
+- make sure database population script works
+- refactor

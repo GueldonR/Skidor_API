@@ -15,14 +15,16 @@ from src.exceptions.exceptions import (
 async def lifespan(app: FastAPI):
     await initialize_database_tables()
     yield  # runtime of the app, can add shutdown code (if needed)
-
+    # Placeholder for any cleanup actions on shutdown
+    print("Shutting down...")
 
 app = FastAPI(
-    title="POC Product API",
+    title="Product API",
     description="A proof-of-concept API for exposing product data",
-    version="1.1.0",
+    version="1.1.1",
     lifespan=lifespan,
 )
+
 
 @app.exception_handler(ProductNotFoundError)
 async def product_not_found_handler(request: Request, exc: ProductNotFoundError):

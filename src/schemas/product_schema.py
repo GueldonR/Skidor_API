@@ -23,11 +23,6 @@ class Product(BaseModel):
         from_attributes = True  # To not require dict input and allow ORM models
 
 
-class ProductSearchSKU(BaseModel):
-    """When searching for products by SKU"""
-    SKU: str = Field(description="The stock keeping unit of the product")
-
-
 class ProductSearchAdvanced(BaseModel):
     """When searching for products by SKU"""
     SKU: str = Field(description="The stock keeping unit of the product")
@@ -51,18 +46,8 @@ class ProductGetAllFields(BaseModel):
     last_updated: datetime | None = Field(
         default=None, description="The date and time the product was last updated, calculated by the database")
 
-
-class ProductById(BaseModel):
-    """Fetches a product, exposing right columns to consumers"""
-
-    SKU: str = Field(description="The stock keeping unit of the product")
-    name: str = Field(description="The name of the product")
-    description: str | None = Field(
-        default=None, description="The description of the product")
-    price: float = Field(description="The price of the product")
-    stock_quantity: int = Field(description="The number of items in stock")
-    last_updated: datetime | None = Field(
-        default=None, description="The date and time the product was last updated, calculated by the database")
+    class Config:
+        from_attributes = True
 
 
 class ProductCreate(BaseModel):
