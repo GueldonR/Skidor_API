@@ -1,17 +1,10 @@
 from ..base import Base
 from datetime import datetime, timezone
 import uuid
-from sqlalchemy import String, Boolean, Float, DateTime, Enum as SQLEnum
-from enum import Enum as PyEnum
+from sqlalchemy import String, DateTime, Enum as SQLEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
-
-# hur ska jag implementera roller?
-
-
-class UserEnum(str, PyEnum):
-    admin = "admin"
-    user = "user"
+from src.domain.enums import UserEnum
 
 
 class BaseUser(Base):
